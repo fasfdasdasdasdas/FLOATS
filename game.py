@@ -2,7 +2,7 @@ import pygame
 
 # Initializing pygame and images
 pygame.init()
-images = 
+playerImg = pygame.image.load('Block.png')
 
 # Define Screen size
 width = 800
@@ -14,17 +14,20 @@ gameOver = False
 # Initialize game screen
 gameScreen = pygame.display.set_mode((width,height))
 
+# Game Class
+
 # Player Class
 class Player(pygame.sprite.Sprite):
     def __init__(self):
-        self.sprite = 
-        x = 
-        y = 
+        self.x = height/2-7
+        self.y = 800/4
+        self.width = 16
+        self.height = 15
+        self.image = playerImg
 
-
+    
 # Obstacle Class
 
-# Game Class
 
 
 # Main Game Loop
