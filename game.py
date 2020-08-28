@@ -9,7 +9,7 @@ BLUE = (0, 0, 255)
 
 # Initializing pygame and images
 pygame.init()
-playerImg = pygame.image.load('Block.png')
+playerImg = pygame.image.load('Block.png') #must be in same directory
 all_sprites = pygame.sprite.Group()
 
 # Define Screen size
@@ -58,6 +58,10 @@ while not gameOver:
                 gameOver = True
             if event.key == pygame.K_SPACE:
                 print("Space")
+        if event.type == pygame.QUIT:
+            gameOver = True
+    
+    gameScreen.blit(background_image, [0, 0])
 
     all_sprites.update()
 
