@@ -1,2 +1,2 @@
-# FLOATS-
+# FLOATS
 COVID Flappy Bird
