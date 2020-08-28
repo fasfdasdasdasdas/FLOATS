@@ -1,5 +1,8 @@
 import pygame
 
+#player = virus?
+#maybe create another py file for people walking class(moving randomly) and import here
+
 #Colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -33,6 +36,9 @@ class Player(pygame.sprite.Sprite):
         self.image = playerImg
         self.rect = self.image.get_rect()
         self.rect.center = (x,y)
+        
+        self.playerX_change = 0
+        self.playerY_change = 0
 
     
     def update(self):
@@ -58,6 +64,13 @@ while not gameOver:
                 gameOver = True
             if event.key == pygame.K_SPACE:
                 print("Space")
+                
+        if event.type == pygame.KEYUP: #moving left and right
+            if event.key == pygame.K_LEFT:
+                player.playerX_change = -3
+            elif event.key == pygame.K_RIGHT:
+                player.playerX_change = 3
+            
         if event.type == pygame.QUIT:
             gameOver = True
     
@@ -67,6 +80,8 @@ while not gameOver:
 
     # Draw 
     screen.fill(WHITE)
+    player.x += player.playerX_change
+    
     all_sprites.draw(screen)
 
     # Flip 
