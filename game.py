@@ -12,6 +12,8 @@ width = 800
 height = 1200
 
 # Initializing pygame and images
+vec = pygame.math.Vector2
+
 pygame.init()
 gameScreen = pygame.display.set_mode((width,height))
 playerImg = pygame.image.load('Block.png').convert()
@@ -27,17 +29,15 @@ gameOver = False
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.x = height/2-7
-        self.y = 800/4
         self.image = playerImg
         self.rect = self.image.get_rect()
-        self.rect.center = (self.x,self.y)
-
+        self.rect.center = (200,600)
     
     def update(self):
-        return
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            print("I dont know how to make it jump")
 
-    
 # Obstacle Class
 
 
@@ -52,11 +52,9 @@ while not gameOver:
 
     # Update game positions
     for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                gameOver = True
-            if event.key == pygame.K_SPACE:
-                print("Space")
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    gameOver = True	
 
     all_sprites.update()
 
