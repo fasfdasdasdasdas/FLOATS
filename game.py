@@ -7,32 +7,31 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
-# Initializing pygame and images
-pygame.init()
-playerImg = pygame.image.load('Block.png')
-all_sprites = pygame.sprite.Group()
-
 # Define Screen size
 width = 800
 height = 1200
 
+# Initializing pygame and images
+pygame.init()
+gameScreen = pygame.display.set_mode((width,height))
+playerImg = pygame.image.load('Block.png').convert()
+clock = pygame.time.Clock()
+all_sprites = pygame.sprite.Group()
+
 # Game Loop Variable
 gameOver = False
-
-# Initialize game screen
-gameScreen = pygame.display.set_mode((width,height))
 
 # Game Class
 
 # Player Class
 class Player(pygame.sprite.Sprite):
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
         self.x = height/2-7
         self.y = 800/4
         self.image = playerImg
         self.rect = self.image.get_rect()
-        self.rect.center = (x,y)
+        self.rect.center = (self.x,self.y)
 
     
     def update(self):
@@ -62,8 +61,8 @@ while not gameOver:
     all_sprites.update()
 
     # Draw 
-    screen.fill(WHITE)
-    all_sprites.draw(screen)
+    gameScreen.fill(WHITE)
+    all_sprites.draw(gameScreen)
 
     # Flip 
     pygame.display.flip()
