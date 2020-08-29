@@ -1,4 +1,4 @@
-import pygame, random
+import pygame, random, time
 
 #Colors
 BLACK = (0, 0, 0)
@@ -101,6 +101,39 @@ class Game():
         bottom = Obstacle(botCoord, height-botCoord)
         bottom.add(self.obstacle_sprite)
 
+    def intro(self):
+        intro = True
+
+        while intro:
+            gameScreen.fill(WHITE)
+            gameScreen.blit(background,(0,0))
+            mouse = pygame.mouse.get_pos()
+
+            font = pygame.font.SysFont('Arial.tff', 120)
+            playB = font.render("PLAY", True, BLACK)
+            playW = font.render("PLAY", True, WHITE)
+
+
+            if ((width/2 - 200) <= mouse[0] <= (width/2 + 200)) and ((height/2 -100) <= mouse[1] <= (height/2 + 100)):
+                pygame.draw.rect(gameScreen, WHITE, [width/2 - 200, height/2- 100, 400,200])
+                gameScreen.blit(playB,(width/2 - 110 ,height/2 - 40)) 
+            else:
+                pygame.draw.rect(gameScreen, BLACK, [width/2 - 200, height/2- 100, 400,200])
+                gameScreen.blit(playW,(width/2 - 110, height/2 - 40)) 
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if ((width/2 - 200) <= mouse[0] <= (width/2 + 200)) and ((height/2 -100) <= mouse[1] <= (height/2 + 100)):
+                        intro = False
+
+            
+            pygame.display.update()
+
+    def gameOverScreen(self):
+        return 0
+
     def newGame(self):
         self.player = Player()
         self.player.add(self.player_sprite)
@@ -138,6 +171,8 @@ class Game():
         pygame.display.flip()
 
     def main(self):
+        self.intro()
+        time.sleep(2)
         while not self.gameOver:
             self.event()
             self.update()
