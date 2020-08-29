@@ -38,6 +38,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (50,45))
         self.rect = self.image.get_rect()
         self.rect.center = (200,600)
+        self.image.set_colorkey(BLACK)
         self.vel = -10
         self.isJump = False
         self.jumpCount = 6
@@ -87,6 +88,8 @@ while not gameOver:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     gameOver = True	
+            if event.type == pygame.QUIT:
+                gameOver = True
 
     all_sprites.update()
 
