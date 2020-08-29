@@ -7,9 +7,10 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
-# Define Screen size
+# Defining Variables
 width = 800
 height = 1200
+gravity = 5
 
 # Initializing pygame and images
 vec = pygame.math.Vector2
@@ -30,13 +31,27 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = playerImg
+        self.image = pygame.transform.scale(self.image, (50,45))
         self.rect = self.image.get_rect()
         self.rect.center = (200,600)
+        self.vel = -1
+        self.isJump = False
+        self.jumpCount = 10
     
     def update(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:
-            print("I dont know how to make it jump")
+        if not self.isJump:
+            if keys[pygame.K_SPACE]:
+                self.isJump = True
+                self.rect.move_ip(0,self.vel)
+        else:
+            if self.jumpCount > 0:
+                self.jumpCount -= 1
+                self.rect.move_ip(0,self.vel) 
+            else:
+                self.isJump = False 
+                self.jumpCount = 10
+            
 
 # Obstacle Class
 
