@@ -1,115 +1,134 @@
 import pygame
+import random
+from items_class import Mask, Vaccine, Player, Enemy
 
-#player = virus?
-#maybe create another py file for people walking class(moving randomly) and import here
-
-#Colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-
-# Initializing pygame and images
+#initalise 
 pygame.init()
-playerImg = pygame.image.load('Block.png') #must be in same directory
-all_sprites = pygame.sprite.Group()
 
-# Define Screen size
-width = 800
-height = 1200
+screen  = pygame.display.set_mode((1000, 800))
 
-# Game Loop Variable
-gameOver = False
+#caption + icon
+background_image = pygame.image.load("12-1000 x 800.jpg")
+pygame.display.set_caption("COVID GAME")
+background_image = pygame.image.load("12-1000 x 800.jpg").convert()
 
-# Initialize game screen
-gameScreen = pygame.display.set_mode((width,height))
+playerImg = pygame.image.load("coronavirus-70 x 70.png")
+enemyImg = pygame.image.load("toilet paper-40 x 40.PNG")
 
-# Game Class
+enemyY = [600, 600, 600, 600, 600]
+enemyX = []
+enemyX_change = []
+enemyY_change = []
 
-# Player Class
-class Player(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__(self)
-        self.x = height/2-7
-        self.y = 800/4
-        self.image = playerImg
-        self.rect = self.image.get_rect()
-        self.rect.center = (x,y)
-        
+#masklocation
+xm = 630
+ym = 560
+
+#vaccine
+
+v1 = 850
+v2 = 460
+
+isJump = False
+jumpCount = 10
+
+#game loop
+running  = True
+
+playerx = 250
+playery = 380
+score = 0
+player = Player(250, 380)
+
+
+def enemy(x, y): #draw
+    screen.blit(enemyImg, (x, y)) #show at the end
+
+def redrawGameWindow(): #change drawing 
+    screen.blit(background_image, (0,0))
+   # player.draw(screen)
+
+while running:
     
-    def update(self):
-        return
-
-    
-# Obstacle Class
-
-
-# Sprites to load
-player = Player()
-player.add(all_sprites)
-
-isJumping = False
-jump_count = 10
-
-# Main Game Loop
-while not gameOver:
-    # Loop Speed
-    clock.tick(30)
-
-    # Update game positions
     for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                gameOver = True
-            if event.type == pygame.QUIT:
-                gameOver = True
-    
-    keys = pygame.key.get_pressed() #moving player
-    if keys[pygame.K_LEFT]: #+ add boundaries later
-        player.playerX -= 3
-        
-    if keys[pygame.K_RIGHT]:
-        player.playerX +=2
-    
-    if not isJumping:
-        
-        if keys[pygame.K_UP]:
-            player.playerY -=2
+        if event.type == pygame.QUIT:
+            running = False #exit
 
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT] and playerx > 2: # + boundary
+        playerx -=2
+
+    if keys[pygame.K_RIGHT] :
+        playerx +=2
+
+    if not isJump:
+        if keys[pygame.K_UP] :
+            playery -=2
+        
         if keys[pygame.K_DOWN]:
-            player.playerY +=2
-        
-        if event.key == pygame.K_SPACE: #jumping - make it move kinda like a parabola? 
-            print("Space")
-            isJumping = True 
-     
+            playery +=2
+
+        if keys[pygame.K_SPACE]: #exit
+            isJump = True 
     else:
-        if jump_count >= -10: #pass lim
+        #player moves up, down
+        if jumpCount >= -10:
             negative = 1
-            if jump_count < 0:
+            #move slower on the way up and faster down
+            if jumpCount < 0: #negative
                 negative = -1
-            
-            player.playerY -= (jump_count * jump_count) * 0.5 * negative #moves up a little
-            jump_count -= 2 #slowly move down
-        else:
-            isJumping = False
-            jump_count = 10 #reset again
 
+            playery -= (jumpCount **2 ) *0.5 * negative #move down a little
+           # player.x -= jumpCount *0.5 * negative 
+            jumpCount -=1 #slowly move down
     
-    gameScreen.blit(background_image, [0, 0])
-
-    all_sprites.update()
-
-    # Draw 
-    screen.fill(WHITE)
-    player.x += player.playerX_change
+        else: #jump ends
+            isJump = False  #can jump up/down again
+            jumpCount = 10 #reset 
     
-    all_sprites.draw(screen)
+    #screen.blit(background_image, (0,0))
+    screen.fill((0,220, 10)) #fill screen before player shows up
+    redrawGameWindow()
 
-    # Flip 
-    pygame.display.flip()
+    player.player1(playerx, playery)
+    vaccine2 = Vaccine()
+    mask2 = Mask()
+    mask2.mask_anim(xm, ym)
+    mask2.add_mask()
+    a = mask2.mask_collision(player)
+    if a: # true
+        mask2.y = player.y
+        score +=1
+        print(score)
+
+    vaccine2.vaccine(v1, v2)
+
+    vaccine2.end_game(player)
+    
+    #having multiple enemies aka humans
+    
+    for i in range(5):
+        enemyX.append(random.randint(0, 830))
+        #enemyY.append(random.randint(50, 150))
+        enemyX_change.append(4)
+        enemyY_change.append(40)
+   
+    #enemy movement 
+    
+    for i in range(5):
+        enemy(enemyX[i], enemyY[i])
+        enemyX[i] += enemyX_change[i]
+        if enemyX[i] <= 0:
+            enemyX_change[i] = 3
+            enemyY[i] += enemyY_change[i]
+        elif enemyX[i] >= 900:
+            enemyX_change[i] = -3
+            enemyY[i] += enemyY_change[i]
+  
+    enemyX += enemyX_change
+
+    #screen.blit(background_image, [0,0])
+    pygame.display.update() #shows player on screen
+    
 
 pygame.quit()
-    
-    
