@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 
 #Colors
 BLACK = (0, 0, 0)
@@ -8,17 +8,17 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
 # Defining Variables
-width = 800
-height = 1200
-gravity = 5
+width = 1944
+height = 1094
 
 # Initializing pygame 
 vec = pygame.math.Vector2
 pygame.init()
 gameScreen = pygame.display.set_mode((width,height))
+background = pygame.image.load('classroom.png')
 
 # Loading Sprites
-playerImg = pygame.image.load('Block.png').convert()
+playerImg = pygame.image.load('coronavirus.png').convert()
 obstacleImg = pygame.Surface((50,800))
 obstacleImg.fill(GREEN)
 
@@ -35,13 +35,14 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = playerImg
-        self.image = pygame.transform.scale(self.image, (50,45))
+        self.image = pygame.transform.scale(self.image, (100,100))
         self.rect = self.image.get_rect()
         self.rect.center = (200,600)
         self.image.set_colorkey(BLACK)
-        self.vel = -10
+        self.vel = -15
         self.isJump = False
         self.jumpCount = 6
+        self.gravity = 7
     
     def update(self):
         keys = pygame.key.get_pressed()
@@ -60,7 +61,7 @@ class Player(pygame.sprite.Sprite):
                 self.jumpCount = 6
 
         # Still need to build in Acceleration of gravity on the player.
-        self.rect.move_ip(0,gravity)
+        self.rect.move_ip(0,self.gravity)
             
 # Obstacle Class
 class Obstacle(pygame.sprite.Sprite):
@@ -69,8 +70,11 @@ class Obstacle(pygame.sprite.Sprite):
         self.image = obstacleImg
         self.rect = self.image.get_rect()
         self.rect.center = (500,0)
+        self.gameSpeed = -5
 
-
+    def update(self):
+        # Movement of obstacle
+        self.rect.move_ip(self.gameSpeed,0)
 
 # Sprites to load
 player = Player()
@@ -95,6 +99,7 @@ while not gameOver:
 
     # Draw 
     gameScreen.fill(WHITE)
+    gameScreen.blit(background,(0,0))
     all_sprites.draw(gameScreen)
 
     # Flip 
