@@ -37,9 +37,6 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x,y)
         
-        self.playerX_change = 0
-        self.playerY_change = 0
-
     
     def update(self):
         return
@@ -52,6 +49,9 @@ class Player(pygame.sprite.Sprite):
 player = Player()
 player.add(all_sprites)
 
+isJumping = False
+jump_count = 10
+
 # Main Game Loop
 while not gameOver:
     # Loop Speed
@@ -62,17 +62,40 @@ while not gameOver:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 gameOver = True
-            if event.key == pygame.K_SPACE:
-                print("Space")
-                
-        if event.type == pygame.KEYUP: #moving left and right
-            if event.key == pygame.K_LEFT:
-                player.playerX_change = -3
-            elif event.key == pygame.K_RIGHT:
-                player.playerX_change = 3
+            if event.type == pygame.QUIT:
+                gameOver = True
+    
+    keys = pygame.key.get_pressed() #moving player
+    if keys[pygame.K_LEFT]: #+ add boundaries later
+        player.playerX -= 3
+        
+    if keys[pygame.K_RIGHT]:
+        player.playerX +=2
+    
+    if not isJumping:
+        
+        if keys[pygame.K_UP]:
+            player.playerY -=2
+
+        if keys[pygame.K_DOWN]:
+            player.playerY +=2
+        
+        if event.key == pygame.K_SPACE: #jumping - make it move kinda like a parabola? 
+            print("Space")
+            isJumping = True 
+     
+    else:
+        if jump_count >= -10: #pass lim
+            negative = 1
+            if jump_count < 0:
+                negative = -1
             
-        if event.type == pygame.QUIT:
-            gameOver = True
+            player.playerY -= (jump_count * jump_count) * 0.5 * negative #moves up a little
+            jump_count -= 2 #slowly move down
+        else:
+            isJumping = False
+            jump_count = 10 #reset again
+
     
     gameScreen.blit(background_image, [0, 0])
 
