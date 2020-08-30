@@ -20,8 +20,9 @@ pygame.display.set_caption('FLOATS! Covid Run')
 
 # Loading Sprites
 playerImg = pygame.image.load('coronavirus.png').convert()
-obstacleImg = pygame.Surface((80,500))
-obstacleImg.fill(RED)
+obstacleImg = pygame.image.load('Syringe.png').convert()
+# obstacleImg = pygame.Surface((80,500))
+# obstacleImg.fill(RED)
 
 clock = pygame.time.Clock()
 
@@ -64,12 +65,15 @@ class Player(pygame.sprite.Sprite):
  
 # Obstacle Class
 class Obstacle(pygame.sprite.Sprite):
-    def __init__(self, y, length):
+    def __init__(self, y, length, up):
         super().__init__()
         self.image = obstacleImg
         self.y = y
         self.image = pygame.transform.scale(self.image, (80,length))
         self.rect = self.image.get_rect()
+        if up == False:
+            self.image = pygame.transform.flip(self.image, False, True)
+        self.image.set_colorkey(BLACK)
         self.rect.x = width
         self.rect.y = y
         self.gameSpeed = -20
@@ -96,9 +100,9 @@ class Game():
         number = random.randint(0 + 200, height - 200)
         topCoord = number - gap
         botCoord = number + gap
-        top = Obstacle(0, topCoord)
+        top = Obstacle(0, topCoord, False)
         top.add(self.obstacle_sprite)
-        bottom = Obstacle(botCoord, height-botCoord)
+        bottom = Obstacle(botCoord, height-botCoord, True)
         bottom.add(self.obstacle_sprite)
 
     def intro(self):
@@ -113,13 +117,22 @@ class Game():
             playB = font.render("PLAY", True, BLACK)
             playW = font.render("PLAY", True, WHITE)
 
-
             if ((width/2 - 200) <= mouse[0] <= (width/2 + 200)) and ((height/2 -100) <= mouse[1] <= (height/2 + 100)):
                 pygame.draw.rect(gameScreen, WHITE, [width/2 - 200, height/2- 100, 400,200])
                 gameScreen.blit(playB,(width/2 - 110 ,height/2 - 40)) 
             else:
                 pygame.draw.rect(gameScreen, BLACK, [width/2 - 200, height/2- 100, 400,200])
                 gameScreen.blit(playW,(width/2 - 110, height/2 - 40)) 
+
+            font = pygame.font.SysFont('Arial.tff', 70)
+            multiB = font.render("Multiplayer", True, BLACK)
+            multiW = font.render("Multiplayer", True, WHITE)  
+            if ((width/2 - 150) <= mouse[0] <= (width/2 + 150)) and ((height/2 +125) <= mouse[1] <= (height/2 + 275)):
+                pygame.draw.rect(gameScreen, WHITE, [width/2 - 150, height/2 + 125, 300,150])
+                gameScreen.blit(multiB,(width/2 - 125 ,height/2 + 180)) 
+            else:
+                pygame.draw.rect(gameScreen, BLACK, [width/2 - 150, height/2 + 125, 300,150])
+                gameScreen.blit(multiW,(width/2 - 125 ,height/2 + 180)) 
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -132,7 +145,10 @@ class Game():
             pygame.display.update()
 
     def gameOverScreen(self):
-        return 0
+        while True:
+            gameOverMenu = pygame.image.load('gameover.png').convert()
+            gameScreen.fill(WHITE)
+            gameScreen.blit(background,(0,0))
 
     def newGame(self):
         self.player = Player()
@@ -155,6 +171,7 @@ class Game():
         collide = pygame.sprite.spritecollide(self.player, self.obstacle_sprite, False)
         if collide:
             self.gameOver = True
+            
         # Spawning extra Obstacles
         self.obsSpawnTimer -= 1
         if self.obsSpawnTimer <= 0:
@@ -177,6 +194,7 @@ class Game():
             self.event()
             self.update()
             self.draw()
+        self.gameOverScreen()
 
 
 # Main Game Loop
